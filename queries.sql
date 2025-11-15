@@ -22,8 +22,8 @@ left join sales s on e.employee_id=s.sales_person_id
 group by seller
 having avg (s.quantity)>(select avg (quantity) from sales)
 order by average_income asc nulls last;
-*/отчет о продавцах, чья средняя выручка за сделку 
-меньше средней выручки за сделку по всем продавцам/*
+/*отчет о продавцах, чья средняя выручка за сделку 
+меньше средней выручки за сделку по всем продавцам*/
 
 SELECT 
     CONCAT(e.first_name, ' ', e.middle_initial, ' ', e.last_name) AS seller,
@@ -46,5 +46,5 @@ ORDER BY
         WHEN TO_CHAR(s.sale_date, 'FMDay') = 'Saturday' THEN 6
         WHEN TO_CHAR(s.sale_date, 'FMDay') = 'Sunday' THEN 7
     END;
-*/запрос выводит ФИО продавца и его выручку за день 
- по дням недели с сортировкой по хронологии недели/*
+/*запрос выводит ФИО продавца и его выручку за день 
+ по дням недели с сортировкой по хронологии недели*/
