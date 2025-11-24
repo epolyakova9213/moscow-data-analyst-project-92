@@ -30,7 +30,8 @@ SELECT
     TO_CHAR(s.sale_date, 'FMDay') as day_of_week,
     FLOOR(SUM(s.quantity)) as income
 FROM employees e 
-FULL JOIN sales s ON e.employee_id = s.sales_person_id
+INNER JOIN sales s ON e.employee_id = s.sales_person_id  -- меняем FULL на INNER
+WHERE s.sale_date IS NOT NULL  -- исключаем NULL даты
 GROUP BY 
     e.first_name, 
     e.middle_initial, 
@@ -45,7 +46,8 @@ ORDER BY
         WHEN TO_CHAR(s.sale_date, 'FMDay') = 'Friday' THEN 5
         WHEN TO_CHAR(s.sale_date, 'FMDay') = 'Saturday' THEN 6
         WHEN TO_CHAR(s.sale_date, 'FMDay') = 'Sunday' THEN 7
-    END;
+    END,
+    seller;
 /*запрос выводит ФИО продавца и его выручку за день 
  по дням недели с сортировкой по хронологии недели*/
 
