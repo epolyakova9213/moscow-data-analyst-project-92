@@ -3,15 +3,15 @@ FROM customers;
 /*запрос выбирает и подсчитывает количество покупателей из таблицы покупателей,
 отображая результат в новом столбце customers_count*/
 
-select 
-concat (e.first_name, ' ', e.middle_initial, ' ', e.last_name) AS seller,
-count (s.sales_id) as operations,
-sum (s.quantity) as income
-from employees e 
-left join sales s on e.employee_id=s.sales_person_id
-group by seller
-order by income desc nulls last
-limit 10;
+SELECT 
+    CONCAT(e.first_name, ' ', e.middle_initial, ' ', e.last_name) AS seller,
+    COUNT(s.sales_id) as operations,
+    SUM(s.quantity) as income
+FROM employees e 
+INNER JOIN sales s ON e.employee_id = s.sales_person_id  
+GROUP BY e.first_name, e.middle_initial, e.last_name    
+ORDER BY income DESC
+LIMIT 10;
 --отчет о десятке лучших продавцов
 
 select 
