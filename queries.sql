@@ -58,7 +58,7 @@ SELECT
         WHEN age > 40 THEN '40+'
         ELSE 'Другие'
     END as age_category,
-    COUNT(*) as category_count
+    COUNT(*) as age_count
 FROM customers
 GROUP BY 
     CASE 
