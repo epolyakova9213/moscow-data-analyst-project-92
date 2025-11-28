@@ -20,7 +20,7 @@ FLOOR(AVG(s.quantity)) as  average_income
 from employees e 
 left join sales s on e.employee_id=s.sales_person_id
 group by seller
-having avg (s.quantity)<(select avg (quantity) from sales)
+having avg (s.quantity)>(select avg (quantity) from sales)
 order by average_income asc nulls last;
 /*отчет о продавцах, чья средняя выручка за сделку 
 меньше средней выручки за сделку по всем продавцам*/
