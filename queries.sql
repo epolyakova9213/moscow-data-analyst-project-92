@@ -31,17 +31,18 @@ ORDER BY average_income ASC NULLS LAST;
 меньше средней выручки за сделку по всем продавцам*/
 
 SELECT 
-    CONCAT(e.first_name, ' ', e.middle_initial, ' ', e.last_name) AS seller,
-    TO_CHAR(s.sale_date, 'FMDay') as day_of_week,
-    FLOOR(SUM(s.quantity)) as income
+    CONCAT(e.first_name, ' ', e.last_name) AS seller,
+    LOWER(TO_CHAR(s.sale_date, 'FMDay')) as day_of_week,  -- добавляем LOWER()
+    FLOOR(SUM(s.quantity * p.price)) as income
 FROM employees e 
-INNER JOIN sales s ON e.employee_id = s.sales_person_id  -- меняем FULL на INNER
-WHERE s.sale_date IS NOT NULL  -- исключаем NULL даты
+INNER JOIN sales s ON e.employee_id = s.sales_person_id
+INNER JOIN products p ON s.product_id = p.product_id
+WHERE s.sale_date IS NOT NULL
 GROUP BY 
     e.first_name, 
     e.middle_initial, 
     e.last_name,
-    TO_CHAR(s.sale_date, 'FMDay')
+    TO_CHAR(s.sale_date, 'FMDay')  -- здесь оставляем без LOWER для группировки
 ORDER BY 
     CASE 
         WHEN TO_CHAR(s.sale_date, 'FMDay') = 'Monday' THEN 1
