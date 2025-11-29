@@ -14,14 +14,19 @@ ORDER BY income ASC
 LIMIT 10;
 --отчет о десятке лучших продавцов
 
-select 
-concat (e.first_name, ' ', e.middle_initial, ' ', e.last_name) AS seller,
-FLOOR(AVG(s.quantity)) as  average_income
-from employees e 
-left join sales s on e.employee_id=s.sales_person_id
-group by seller
-having avg (s.quantity)>(select avg (quantity) from sales)
-order by average_income asc nulls last;
+SELECT 
+    CONCAT(e.first_name, ' ', e.last_name) AS seller,
+    FLOOR(AVG(s.quantity * p.price)) as average_income
+FROM employees e 
+LEFT JOIN sales s ON e.employee_id = s.sales_person_id
+LEFT JOIN products p ON s.product_id = p.product_id
+GROUP BY seller
+HAVING AVG(s.quantity * p.price) < (
+    SELECT AVG(s2.quantity * p2.price) 
+    FROM sales s2 
+    LEFT JOIN products p2 ON s2.product_id = p2.product_id
+)
+ORDER BY average_income ASC NULLS LAST;
 /*отчет о продавцах, чья средняя выручка за сделку 
 меньше средней выручки за сделку по всем продавцам*/
 
