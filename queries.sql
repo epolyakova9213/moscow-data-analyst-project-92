@@ -32,7 +32,7 @@ ORDER BY average_income ASC NULLS LAST;
 
 SELECT 
     CONCAT(e.first_name, ' ', e.last_name) AS seller,
-    LOWER(TO_CHAR(s.sale_date, 'FMDay')) as day_of_week,  -- добавляем LOWER()
+    LOWER(TO_CHAR(s.sale_date, 'FMDay')) || ' ' as day_of_week,
     FLOOR(SUM(s.quantity * p.price)) as income
 FROM employees e 
 INNER JOIN sales s ON e.employee_id = s.sales_person_id
@@ -42,7 +42,7 @@ GROUP BY
     e.first_name, 
     e.middle_initial, 
     e.last_name,
-    TO_CHAR(s.sale_date, 'FMDay')  -- здесь оставляем без LOWER для группировки
+    TO_CHAR(s.sale_date, 'FMDay')
 ORDER BY 
     CASE 
         WHEN TO_CHAR(s.sale_date, 'FMDay') = 'Monday' THEN 1
