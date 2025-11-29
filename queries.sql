@@ -77,12 +77,13 @@ ORDER BY age_category;
 --отчет сегментирует клиентов на категории по возрасту с подсчетом кол-ва клиентов
 
 select
-to_char(sale_date, 'YYYY-MM') as selling_month,
-count(distinct customer_id) as total_customers,
-sum (quantity) as income
+    to_char(s.sale_date, 'YYYY-MM') as selling_month,
+    count(distinct s.customer_id) as total_customers,
+    round(sum(s.quantity * p.price), 0) as income
 from sales s 
-group by to_char(sale_date, 'YYYY-MM')
-order by to_char(sale_date, 'YYYY-MM') asc;
+inner join products p on s.product_id = p.product_id
+group by to_char(s.sale_date, 'YYYY-MM')
+order by to_char(s.sale_date, 'YYYY-MM') asc;
 --отчет показывает кол-во уникальных покупателей и выручку в месяц года
 
 with first_purchases as (
