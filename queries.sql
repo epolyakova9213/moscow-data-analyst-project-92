@@ -75,7 +75,7 @@ GROUP BY
         ELSE 'Другие'
     END
 ORDER BY age_category;
---отчет сегментирует клиентов на категории по возрасту с подсчетом кол-ва клиентов
+--отчет сегментирует клиентов на категории по возрасту
 
 SELECT
     TO_CHAR(s.sale_date, 'YYYY-MM') AS selling_month,
