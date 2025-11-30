@@ -1,4 +1,5 @@
-SELECT COUNT(customer_id) AS customers_count
+SELECT
+    COUNT(customer_id) AS customers_count
 FROM customers;
 /*запрос выбирает и подсчитывает количество покупателей из таблицы покупателей,
 отображая результат в новом столбце customers_count*/
@@ -77,43 +78,42 @@ GROUP BY
 ORDER BY age_category;
 --отчет сегментирует клиентов на категории по возрасту с подсчетом кол-ва клиентов
 
-select
-    to_char(s.sale_date, 'YYYY-MM') as selling_month,
-    count(distinct s.customer_id) as total_customers,
-    round(sum(s.quantity * p.price), 0) as income
-from sales as s
-inner join products as p on s.product_id = p.product_id
-group by to_char(s.sale_date, 'YYYY-MM')
-order by to_char(s.sale_date, 'YYYY-MM') asc;
+SELECT
+    TO_CHAR(s.sale_date, 'YYYY-MM') AS selling_month,
+    COUNT(DISTINCT s.customer_id) AS total_customers,
+    ROUND(SUM(s.quantity * p.price), 0) AS income
+FROM sales AS s
+INNER JOIN products AS p ON s.product_id = p.product_id
+GROUP BY TO_CHAR(s.sale_date, 'YYYY-MM')
+ORDER BY TO_CHAR(s.sale_date, 'YYYY-MM') ASC;
 --отчет показывает кол-во уникальных покупателей и выручку в месяц года
 
-with first_purchases as (
-    select
+WITH first_purchases AS (
+    SELECT
         s.customer_id,
         p.product_id,
         p.price,
-        min(sale_date) as first_sale_date
-    from products as p
-    left join sales as s on p.product_id = s.product_id
-    where
+        MIN(s.sale_date) AS first_sale_date
+    FROM products AS p
+    LEFT JOIN sales AS s ON p.product_id = s.product_id
+    WHERE
         p.price = 0
-        and customer_id is not null
-    group by customer_id, p.product_id
+        AND s.customer_id IS NOT NULL
+    GROUP BY s.customer_id, p.product_id
 )
 
-select distinct on (c.customer_id)
-    fp.first_sale_date as sale_date,
-    concat(c.first_name, ' ', c.last_name) as customer,
-    concat(e.first_name, ' ', e.last_name) as seller
-from first_purchases as fp
-inner join sales as s
-    on
+SELECT DISTINCT ON (c.customer_id)
+    fp.first_sale_date AS sale_date,
+    CONCAT(c.first_name, ' ', c.last_name) AS customer,
+    CONCAT(e.first_name, ' ', e.last_name) AS seller
+FROM first_purchases AS fp
+INNER JOIN sales AS s
+    ON
         fp.customer_id = s.customer_id
-        and fp.first_sale_date = s.sale_date
-inner join customers as c on fp.customer_id = c.customer_id
-inner join employees as e on s.sales_person_id = e.employee_id
-order by c.customer_id;
+        AND fp.first_sale_date = s.sale_date
+INNER JOIN customers AS c ON fp.customer_id = c.customer_id
+INNER JOIN employees AS e ON s.sales_person_id = e.employee_id
+ORDER BY c.customer_id;
 /*выбирает в CTE покупателей с первой покупкой товара с ценой 0
 потом в основном запросе уже джойнит из таблиц нужные поля, но с условием уникальности по customer_id,
 потому что покупатели в свой первый день делали по нескольк покупок товаров с ценой 0*/
-
